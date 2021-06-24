@@ -1,9 +1,24 @@
-const { getOneProperty, getAllProperties, createProperty, deleteProperty } = require('../controllers/properties')
+const {
+    getOneProperty,
+    getAllProperties,
+    createProperty,
+    deleteProperty,
+    updateProperty,
+} = require('../controllers/properties')
+
+const errorSchema = {
+    type: 'object',
+    properties: {
+        statusCode: { type: 'integer' },
+        error: { type: 'string' },
+        message: { type: 'string' },
+    }
+}
 
 const propertySchema = {
     type: 'object',
     properties: {
-        id: { type: 'string', format: 'uuid' },
+        id: { type: 'string' },
         name: { type: 'string' },
         city: { type: 'string' },
     }
@@ -18,13 +33,27 @@ const createPropertySchema = {
     },
 }
 
-const errorSchema = {
+const updatePropertySchema = {
     type: 'object',
     properties: {
-        statusCode: { type: 'integer' },
-        error: { type: 'string' },
-        message: { type: 'string' },
-    }
+        name: { type: 'string' },
+        city: { type: 'string' },
+    },
+}
+
+const updatePropertyOptions = {
+    schema: {
+        tags: ['properties'],
+        params: {
+            id: { type: "string" }
+        },
+        body: updatePropertySchema,
+        response: {
+            200: propertySchema,
+            404: errorSchema,
+        }
+    },
+    handler: updateProperty
 }
 
 const getAllPropertiesOptions = {
@@ -66,12 +95,7 @@ const deletePropertyOptions = {
             id: { type: "string" }
         },
         response: {
-            200: {
-                type: 'object',
-                properties: {
-                    message: {type: 'string'}
-                }
-            },
+            200: propertySchema,
             404: errorSchema,
         }
     },
@@ -92,10 +116,11 @@ const createPropertyOptions = {
 };
 
 function propertiesRoutes(fastify, options, done) {
-    fastify.get('/property', getAllPropertiesOptions);
-    fastify.get('/property/:id', getOnePropertyOptions);
-    fastify.post('/property', createPropertyOptions);
-    fastify.delete('/property/:id', deletePropertyOptions);
+    fastify.get('/', getAllPropertiesOptions);
+    fastify.get('/:id', getOnePropertyOptions);
+    fastify.post('/', createPropertyOptions);
+    fastify.delete('/:id', deletePropertyOptions);
+    fastify.patch('/:id', updatePropertyOptions);
     done();
 }
 

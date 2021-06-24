@@ -1,48 +1,66 @@
-const uuid = require('uuid').v4
-const properties = require('../properties');
-
-const getAllProperties = (req, res) => {
-    res.send(properties);
+const getAllProperties = async function(req, res) {
+    const data = await this.mongo.db.collection('challet').find().toArray();
+    data.map(one => one.id = one._id);
+    res.send(data);
 };
 
-const getOneProperty = (req, res) => {
+const getOneProperty = async function (req, res) {
     const { id } = req.params;
-    const found = properties.find(one => one.id == id);
+    const found = await this.mongo.db.collection('challet').findOne({"_id": this.mongo.ObjectId(id)});
     if (found) {
+        found.id = found._id;
         res.send(found);
     }
     else {
-        res.code(404).send({statusCode: 404, error: 'NOT_FOUND', message: 'Item not found'});
+        throw new Error('Item not found');
     }
-}
+};
 
-const createProperty = (req, res) => {
+const createProperty = async function (req, res) {
     const { name, city } = req.body;
-    const newProperty = {
-        id: uuid(),
-        name,
-        city
-    };
-    properties.push(newProperty);
-    res.code(201).send(newProperty);
-}
+    const newProperty = { name, city };
+    const result = await this.mongo.db.collection("challet").insertOne(newProperty);
+    res.code(201).send({id: result.insertedId, name, city});
+};
 
-const deleteProperty = (req, res) => {
+const deleteProperty = async function(req, res) {
     const { id } = req.params;
-    const foundIndex = properties.findIndex(one => one.id == id);
-    if (foundIndex>=0) {
-        properties.splice(foundIndex, 1);
-        res.send({message: 'DELETED'});
+    const found = await this.mongo.db.collection('challet').findOneAndDelete({"_id": this.mongo.ObjectId(id)});
+    if (found.value) {
+        found.value.id = found.value._id;
+        res.send(found.value);
     }
     else {
-        console.log('asdas das das d');
-        res.code(404).send({statusCode: 404, error: 'NOT_FOUND', message: 'Item not found'});
+        throw new Error('Item not found');
     }
-}
+};
+
+const updateProperty = async function(req, res) {
+    const { id } = req.params;
+    const { name, city } = req.body;
+    const found = await this.mongo.db.collection('challet').findOne({"_id": this.mongo.ObjectId(id)});
+    if (found) {
+        const data = {
+            name: name || found.name,
+            city: city || found.city,
+        };
+        const success = await this.mongo.db.collection('challet').findOneAndUpdate({"_id": this.mongo.ObjectId(id)},{$set: data});
+        if (success.value) {
+            res.send({...data, id});
+        }
+        else {
+            throw new Error('Error updating item');
+        }
+    }
+    else {
+        throw new Error('Item not found');
+    }
+};
 
 module.exports = {
     getOneProperty,
     getAllProperties,
     createProperty,
     deleteProperty,
+    updateProperty,
 };

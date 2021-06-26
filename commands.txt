@@ -1,0 +1,5 @@
+ 2007  heroku git:remote -a challet-api
+ 2008  git push heroku master:main
+ 2008  git push heroku main:main
+ 2020  heroku logs --tail
+ 2028  heroku run ls

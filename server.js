@@ -44,7 +44,7 @@ fastify.register(require('fastify-swagger'), {
 fastify.register(require('fastify-mongodb'), {
   forceClose: true,
   authSource: 'admin',
-  url: `mongodb://${encodeURIComponent(DB_USER)}:${encodeURIComponent(DB_PASSWORD)}@${DB_HOST}:${DB_PORT}/challetDB`
+  url: `mongodb+srv://${encodeURIComponent(DB_USER)}:${encodeURIComponent(DB_PASSWORD)}@${DB_HOST}:${DB_PORT}/challetDB?retryWrites=true&w=majority`
 });
 
 fastify.register(auth);

@@ -70,7 +70,7 @@ function allRoutes(fastify, options, done) {
 
 const start = async () => {
     try {
-        await fastify.listen(PORT);
+        await fastify.listen(PORT, '0.0.0.0');
     } catch (error) {
         fastify.log.error(error);
         process.exit(1);

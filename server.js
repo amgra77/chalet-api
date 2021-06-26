@@ -41,10 +41,19 @@ fastify.register(require('fastify-swagger'), {
     }
 });
 
+function getUrl() {
+    if (process.env.NODE_ENV=="production") {
+        return `mongodb+srv://${encodeURIComponent(DB_USER)}:${encodeURIComponent(DB_PASSWORD)}@${DB_HOST}/challetDB?retryWrites=true&w=majority`
+    }
+    else {
+        `mongodb://${encodeURIComponent(DB_USER)}:${encodeURIComponent(DB_PASSWORD)}@${DB_HOST}:${DB_PORT}/challetDB` 
+    }
+}
+
 fastify.register(require('fastify-mongodb'), {
   forceClose: true,
   authSource: 'admin',
-  url: `mongodb+srv://${encodeURIComponent(DB_USER)}:${encodeURIComponent(DB_PASSWORD)}@${DB_HOST}:${DB_PORT}/challetDB?retryWrites=true&w=majority`
+  url: getUrl()
 });
 
 fastify.register(auth);

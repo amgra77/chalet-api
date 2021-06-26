@@ -7,7 +7,7 @@ const rootSchema = {
 };
 
 const getRootController = (req, res) => {
-    res.send({version: require('./package.json').version, name: require('./package.json').name});
+    res.send({version: require('../package.json').version, name: require('../package.json').name});
 }
 
 const rootOptions = {

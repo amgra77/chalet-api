@@ -1,4 +1,5 @@
 const getAllProperties = async function(req, res) {
+    // console.log('req.user ', req.user); // {user:xxxx}
     const data = await this.mongo.db.collection('challet').find().toArray();
     data.map(one => one.id = one._id);
     res.send(data);

@@ -12,6 +12,8 @@ API to manage a chalet. Testing [Fastify](https://www.fastify.io/) Javascript fr
 Access Swagger at /docs
 
 # Run
+First copy `.env.sample` into `.env` and modify to your settings (db credentials, etc...)
+
 ```shell
 npm install
 npm run start

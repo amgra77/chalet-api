@@ -42,11 +42,12 @@ fastify.register(require('fastify-swagger'), {
 });
 
 function getUrl() {
+    console.log('process.env.DB_USER ', process.env.DB_USER);
     if (process.env.NODE_ENV=="production") {
         return `mongodb+srv://${encodeURIComponent(DB_USER)}:${encodeURIComponent(DB_PASSWORD)}@${DB_HOST}/challetDB?retryWrites=true&w=majority`
     }
     else {
-        `mongodb://${encodeURIComponent(DB_USER)}:${encodeURIComponent(DB_PASSWORD)}@${DB_HOST}:${DB_PORT}/challetDB` 
+        return `mongodb://${encodeURIComponent(DB_USER)}:${encodeURIComponent(DB_PASSWORD)}@${DB_HOST}:${DB_PORT}/challetDB` 
     }
 }
 
